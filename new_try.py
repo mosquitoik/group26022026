@@ -1,10 +1,8 @@
 apples = "3"
 pears = "2"
-
 # print(type(apples))
 
 apples = int(apples)
-
 # print(type(apples))
 
 integer_number = 1_000
