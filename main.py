@@ -1,27 +1,56 @@
-favorite_city = "Odessa"
-city_association = "🐬"
+from pywebio.input import input, slider
+from pywebio.output import put_markdown, put_text, put_image
 
-print(favorite_city, city_association)
-print(ord("🐬"))
-print("\U0001F34D")
+import pictures
+import prices
+from discount import DISCOUNT_TRIGGER_COST, DISCOUNT_PERCENTAGE
 
-poem = """Еней був парубок моторний
+# Header
+put_markdown("# 🍽️ Ресторан \"Смачна Їжа\"")
+put_markdown("---")
 
-І хлопець хоть куди козак,
+# Menu
+put_markdown("## 📋 Menu:")
 
-Удавсь на все зле проворний,
+put_image(pictures.PICTURE_PIZZA, width="300")
+put_text(f"🍕 Pizza by {prices.PRICE_PIZZA} grn")
 
-Завзятіший од всіх бурлак.
+put_image(pictures.PICTURE_CAVIAR, width="300")
+put_text(f"Caviar by {prices.PRICE_CAVIAR_10g} grn / 10g")
 
-Но греки, як спаливши Трою,
+# Order placing
+put_markdown("## Ordering:")
 
-Зробили з неї скитр гною,
+quantity_pizza = input(label="How many pizza do you like?", type="number", min=0,value=1)
+quantity_caviar_g = slider(label="How much caviar do you like?", min_value=0, max_value=1000, value=10, step=10)
+quantity_caviar = quantity_caviar_g / 10
 
-Він, взявши торбу, тягу дав;
+# calculation
+cost_pizza = quantity_pizza * prices.PRICE_PIZZA
+cost_caviar = quantity_caviar * prices.PRICE_CAVIAR_10g
+total_cost = cost_caviar + cost_pizza
 
-Забравши деяких троянців,
+discount_summa = 0
+if total_cost >= DISCOUNT_TRIGGER_COST:
+    discount_summa = round(total_cost * DISCOUNT_PERCENTAGE / 100, 0)
 
-Осмалених, як гиря, ланців,
+final_cost = total_cost - discount_summa
 
-П'ятами з Трої накивав."""
-print(poem)
+# ORDER
+put_markdown("## RESULT:")
+
+if cost_pizza:
+    put_text(f"🍕Pizza: {quantity_pizza} / {prices.PRICE_PIZZA} grn = {cost_pizza}")
+if cost_caviar:
+    put_text(f"cost_caviar: {quantity_caviar_g} / {prices.PRICE_CAVIAR_10g} grn/10g = {cost_caviar}")
+
+if total_cost:
+    put_text(f"Total cost: {total_cost}")
+
+
+if discount_summa:
+    put_text(f"discount_summa : {discount_summa}")
+    put_text(f"))))))))))))))))")
+
+
+put_text(f"final_cost: {final_cost}")
