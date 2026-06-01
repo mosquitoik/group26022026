@@ -1,0 +1,5 @@
+PICTURE_PIZZA = "https://images.unsplash.com/photo-1513104890138-7c749659a591"
+PICTURE_BURGER = "https://images.unsplash.com/photo-1568901346375-23c9450c58cd"
+PICTURE_STEAK = "https://images.unsplash.com/photo-1544025162-d76694265947"
+PICTURE_CAVIAR = "https://a-ikra.ru/wa-data/public/blog/img/raznovidnost.webp"
+PICTURE_DESSERT = "https://images.unsplash.com/photo-1551024506-0bccd828d307"
