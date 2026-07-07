@@ -1,11 +1,48 @@
 import requests
-from pprint import pprint  #can be removed
+from pprint import pprint
 
 url = 'https://dummyjson.com/posts'
-response = requests.get(url=url)
+params = {
+    "skip": 0,
+    "limit": 251,
+}
+response = requests.get(url=url, params=params)
 # print(response.content)
 # print(response.text)
-pprint(response.json(), indent=4)   #pprint, indent=4 - can be removed if the site html or js not json
+# pprint(response.json(), indent=4)
+# print(response.json())
 
-# print('dfgvbhjfq\nkygdfhqvjhfdfh\nkechgjfr')
-# print("""nbhg""")
+# print('hello\name\nothing')
+# print('"typo"')
+response_json = response.json()
+posts = response_json['posts']
+# pprint(posts, indent=4)
+dude_user_id = 47
+likes_min_level = 300
+search_text = 'dream'
+
+friends_favourite_posts = []
+search_text_results = []
+counter = 0
+
+for post in posts:
+    counter = counter + 1
+    # common data
+    title = post['title']
+    body = post['body']
+
+    # user friend part
+    user_id = post['userId']
+    reactions = post['reactions']
+    likes = reactions['likes']
+    if user_id == dude_user_id and likes >= likes_min_level:
+        friends_favourite_posts.append(title)
+
+    # search text part
+    if search_text in title.lower() or search_text in body.lower():
+        search_text_results.append(post)
+
+
+print(friends_favourite_posts)
+pprint(search_text_results)
+print(counter)
