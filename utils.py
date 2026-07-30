@@ -1,13 +1,36 @@
-def get_travel_info(driver: str, passenger_1: str = "", passenger_2: str = "", passenger_3: str = 'sister') -> str:
-    passengers = [passenger_1, passenger_2, passenger_3]
-    #                  ['Anastasiia', '', '']  - result of this ^
-    real_passengers = []
-    for passenger in passengers:
-        if passenger:
-            real_passengers.append(passenger)
+from typing import Any
+from datetime import datetime
 
-    passengers_str = ", ".join(real_passengers)
-    print(passengers_str)
+import requests
+import constants
+import config
 
-    people_in_car = f"DRIVER: {driver.title()}, passengers: {passengers_str}."
-    return people_in_car
+def write_logs(key: str, params: dict, result: Any):
+    with open(constants.LOG_CSV_FILE_NAME, mode="a", encoding="utf-8") as file:
+        log = f"{datetime.now()};{key};{params};{result}\n"
+        file.write(log)
+
+
+def get_weather_info(city: str) -> dict:
+    params = {
+        "q": city,
+        "appid": config.API_KEY,
+        "units": "metric",
+    }
+    response = requests.get(constants.OPEN_WEATHER_API_URL, params=params)
+    response_json = response.json()
+    # print(response.url, response_json)
+    temperature = response_json["main"]["temp"]
+    temperature_like = response_json["main"]["feels_like"]
+    weather_main = response_json["weather"][0]["main"]
+    weather_description = response_json["weather"][0]["description"]
+    wind_speed = response_json["wind"]["speed"]
+    result = {
+        "temperature": temperature,
+        "temperature_like": temperature_like,
+        "weather_main": weather_main,
+        "weather_description": weather_description,
+        "wind_speed": wind_speed,
+    }
+    write_logs('get_weather_info', {"city": city}, result)
+    return result
