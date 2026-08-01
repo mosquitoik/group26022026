@@ -1,10 +1,11 @@
 import utils
 from pywebio.input import input, input_group
-from pywebio.output import put_text
+from pywebio.output import put_text, put_success
 from pywebio import start_server
 from pywebio.session import run_js
 
 
+# chi23@ukr.net
 def main():
 
     data = input_group(
@@ -15,7 +16,19 @@ def main():
             input(label="Name", name="name", required=True),
         ],
     )
-    print(data)
+    current_weather = utils.get_weather_info(data["city"])
+    email_body = utils.create_weather_report(current_weather)
+
+    recipients = [  data["email"]  ]
+
+    utils.send_email(
+        recipients,
+        email_body,
+        mail_subject=f'Weather in {data["city"]}',
+        # attachment='log.csv'
+    )
+
+    put_success("Email was sent. The page reloads in 5 seconds...")
 
     run_js("""
         setTimeout(() => {window.location.reload();}, 5000);
