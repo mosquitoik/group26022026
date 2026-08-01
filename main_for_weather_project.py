@@ -7,7 +7,7 @@ from pywebio.session import run_js
 
 # chi23@ukr.net
 def main():
-
+    1/0
     data = input_group(
         "Запит на погодну погоду",
         [
