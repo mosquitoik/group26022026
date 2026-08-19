@@ -11,19 +11,35 @@ def decorator_template_no_params(func: Callable):
     return wrapper
 
 
-def logs_decorators(func: Callable):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        print('logs_decorator before')
+def decorator_template_with_params(param):
+    def decorator_template_with_params_inner(func: Callable):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            result = func(*args, **kwargs)
+            return result
 
-        result = func(*args, **kwargs)
-        with open(f'logs_{func.__name__}.csv', mode='a', encoding='utf-8') as log_file:
-            log_file.write(f"{datetime.now()};{func.__name__};{args};{kwargs};{result}\n")
-        print('logs_decorator after')
-        return result
+        return wrapper
 
-    return wrapper
+    return decorator_template_with_params_inner
 
+
+def logs_decorator(filename: str = "general"):
+    def logs_decorator_inner(func: Callable):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            print('logs_decorator before')
+
+            result = func(*args, **kwargs)
+            # with open(f'logs_{func.__name__}.csv', mode='a', encoding='utf-8') as log_file:
+            with open(f'logs_{filename}.csv', mode='a', encoding='utf-8') as log_file:
+                log_file.write(f"{datetime.now()};{func.__name__};{args};{kwargs};{result}\n")
+
+            print('logs_decorator after')
+            return result
+
+        return wrapper
+
+    return logs_decorator_inner
 
 def decorator_round_result(func: Callable):
     @wraps(func)
@@ -64,7 +80,7 @@ def return_str() -> str:
 
 
 @decorator_admin_permission
-@logs_decorators
+@logs_decorator(filename='bla')
 @decorator_round_result
 def add_numbers(number_1: float, number_2: float) -> float:
     print('add_numbers was called')
@@ -72,7 +88,7 @@ def add_numbers(number_1: float, number_2: float) -> float:
     return result
 
 
-@logs_decorators
+@logs_decorator('bla-bla')
 @decorator_round_result
 def subtract_numbers(number_1: float, number_2: float) -> float:
     result = number_2 - number_1
@@ -96,7 +112,7 @@ def divide_numbers(number_1: float, number_2: float) -> float:
 res_1 = add_numbers(4.989767, 56.98)
 print(res_1)
 
-# res_2 = subtract_numbers(4.989767, 56.98)
+res_2 = subtract_numbers(4.989767, 56.98)
 # print(res_2)
 #
 # res_3 = multiply_numbers(4.989767, 56.98)
